@@ -1,0 +1,51 @@
+<section class="panel form-panel">
+  <div class="section-title">
+    <div>
+      <h2>Add task</h2>
+      <p>Capture it now. Prioritize it next.</p>
+    </div>
+    <span class="shortcut">Ctrl ↵</span>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" (keydown.control.enter)="submit()">
+    <label class="field full title-field">
+      <span>Task</span>
+      <input formControlName="title" placeholder="What needs to be done?" autocomplete="off">
+    </label>
+
+    <div class="grid-2">
+      <label class="field">
+        <span>Category</span>
+        <select formControlName="categoryId">
+          <option value="" disabled>Choose category</option>
+          @for (category of categories(); track category.id) {
+            <option [value]="category.id">{{ category.name }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="field">
+        <span>Due</span>
+        <input type="date" formControlName="dueDate">
+      </label>
+    </div>
+
+    <label class="field full priority-field">
+      <div class="range-caption">
+        <span>Priority</span>
+        <strong>{{ form.controls.priority.value }} · {{ priorityLabel(form.controls.priority.value) }}</strong>
+      </div>
+      <input type="range" formControlName="priority" [min]="minPriority()" [max]="maxPriority()" step="1">
+      <div class="range-scale"><span>{{ minPriority() }}</span><span>Higher score = closer to center</span><span>{{ maxPriority() }}</span></div>
+    </label>
+
+    <label class="field full">
+      <span>Notes <small>optional</small></span>
+      <textarea formControlName="description" rows="2" placeholder="Add useful context..."></textarea>
+    </label>
+
+    <button class="primary-btn" type="submit" [disabled]="!categories().length || !priorityBands().length">
+      Create task
+    </button>
+  </form>
+</section>

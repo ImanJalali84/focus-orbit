@@ -1,0 +1,47 @@
+<section class="panel list-panel">
+  <div class="list-head">
+    <div>
+      <h2>Tasks</h2>
+      <p>{{ visibleTasks().length }} in this view</p>
+    </div>
+    <div class="segmented" aria-label="Task filter">
+      <button [class.active]="mode()==='open'" (click)="mode.set('open')">Open</button>
+      <button [class.active]="mode()==='done'" (click)="mode.set('done')">Done</button>
+      <button [class.active]="mode()==='all'" (click)="mode.set('all')">All</button>
+    </div>
+  </div>
+
+  <div class="search">
+    <input #q [value]="query()" (input)="query.set(q.value)" placeholder="Search tasks..." aria-label="Search tasks">
+  </div>
+
+  <div class="task-stack">
+    @for (task of visibleTasks(); track task.id) {
+      <article class="task-row" [class.done]="task.done" (click)="selected.emit(task)">
+        <button class="check" [class.checked]="task.done" (click)="$event.stopPropagation(); toggled.emit(task.id)" [attr.aria-label]="task.done ? 'Reopen task' : 'Complete task'">✓</button>
+
+        <div class="task-body">
+          <h3>{{ task.title }}</h3>
+          <div class="meta">
+            @if (category(task.categoryId); as cat) {
+              <span class="category"><i [style.background]="cat.color"></i>{{ cat.name }}</span>
+            }
+            @if (band(task.priority); as p) {
+              <span>{{ p.name }} · {{ task.priority }}</span>
+            } @else {
+              <span class="warning">Out of range · {{ task.priority }}</span>
+            }
+            @if (task.dueDate) { <span class="due">{{ task.dueDate }}</span> }
+          </div>
+        </div>
+
+        <button class="trash" (click)="$event.stopPropagation(); deleted.emit(task.id)" aria-label="Delete task">×</button>
+      </article>
+    } @empty {
+      <div class="empty">
+        <strong>No tasks here</strong>
+        <span>Try another filter or add a new task.</span>
+      </div>
+    }
+  </div>
+</section>

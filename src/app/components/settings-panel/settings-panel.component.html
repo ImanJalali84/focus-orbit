@@ -1,0 +1,59 @@
+<button class="settings-trigger" (click)="show()" aria-label="Open workspace settings">⚙ <span>Settings</span></button>
+
+@if (open()) {
+  <div class="backdrop" (click)="open.set(false)"></div>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-label="Workspace settings">
+    <header>
+      <div><span class="eyebrow">Settings</span><h2>Workspace setup</h2></div>
+      <button class="close" (click)="open.set(false)" aria-label="Close settings">×</button>
+    </header>
+
+    <div class="drawer-body">
+      <section>
+        <div class="section-head">
+          <div><h3>Categories</h3><p>Group related tasks and give each group a color.</p></div>
+          <button class="soft" (click)="addCategory()">+ Add</button>
+        </div>
+        <div class="editor-list">
+          @for (category of categoryDrafts; track category.id) {
+            <div class="editor-row category-row">
+              <input class="color" type="color" [(ngModel)]="category.color" aria-label="Category color">
+              <input [(ngModel)]="category.name" placeholder="Category name">
+              <button class="remove" (click)="removeCategory(category.id)" aria-label="Remove category">×</button>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <div><h3>Priority levels</h3><p>Set the numeric ranges used to place tasks on the map.</p></div>
+        </div>
+        <div class="preset-row">
+          <button class="soft" (click)="preset(2)">2 levels</button>
+          <button class="soft" (click)="preset(3)">3 levels</button>
+          <button class="soft" (click)="addBand()">+ Add level</button>
+        </div>
+        <div class="editor-list">
+          @for (band of bandDrafts; track band.id) {
+            <div class="band-row">
+              <input [(ngModel)]="band.name" placeholder="Level name">
+              <label>From <input type="number" [(ngModel)]="band.min"></label>
+              <label>To <input type="number" [(ngModel)]="band.max"></label>
+              <button class="remove" (click)="removeBand(band.id)" aria-label="Remove priority level">×</button>
+            </div>
+          }
+        </div>
+        @if (invalidBands()) { <div class="validation">Ranges must be valid and cannot overlap.</div> }
+      </section>
+    </div>
+
+    <footer>
+      <button class="ghost danger" (click)="resetRequested.emit(); open.set(false)">Reset sample data</button>
+      <div class="footer-actions">
+        <button class="ghost" (click)="open.set(false)">Cancel</button>
+        <button class="save" (click)="save()" [disabled]="invalidBands() || !categoryDrafts.length">Save</button>
+      </div>
+    </footer>
+  </aside>
+}

@@ -1,0 +1,34 @@
+@if (task(); as item) {
+  <div class="dialog-backdrop" (click)="closed.emit()">
+    <section class="detail-dialog" role="dialog" aria-modal="true" aria-labelledby="task-dialog-title" (click)="$event.stopPropagation()">
+      <header class="dialog-head">
+        <div class="status-line">
+          @if (category(item.categoryId); as cat) {
+            <span class="category" [style.--cat]="cat.color"><i></i>{{ cat.name }}</span>
+          }
+          @if (band(item.priority); as p) {
+            <span class="priority">{{ p.name }} · {{ item.priority }}</span>
+          }
+        </div>
+        <button class="close" (click)="closed.emit()" aria-label="Close task details">×</button>
+      </header>
+
+      <div class="dialog-body">
+        <h2 id="task-dialog-title">{{ item.title }}</h2>
+        <p class="description">{{ item.description || 'No notes for this task.' }}</p>
+
+        <dl>
+          <div><dt>Status</dt><dd><span class="status-dot" [class.done]="item.done"></span>{{ item.done ? 'Completed' : 'Open' }}</dd></div>
+          <div><dt>Priority</dt><dd>{{ item.priority }}</dd></div>
+          <div><dt>Due</dt><dd>{{ item.dueDate || 'No due date' }}</dd></div>
+          <div><dt>Created</dt><dd>{{ item.createdAt.slice(0, 10) }}</dd></div>
+        </dl>
+      </div>
+
+      <footer class="actions">
+        <button class="delete" (click)="deleted.emit(item.id)">Delete</button>
+        <button class="toggle" (click)="toggled.emit(item.id)">{{ item.done ? 'Reopen task' : 'Mark complete' }}</button>
+      </footer>
+    </section>
+  </div>
+}

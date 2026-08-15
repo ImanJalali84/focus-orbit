@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Focus Orbit">
+  <defs>
+    <linearGradient id="bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#171925"/>
+      <stop offset="1" stop-color="#0b0c10"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="19" y1="17" x2="45" y2="47" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9a8cff"/>
+      <stop offset="1" stop-color="#6f5cf5"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#bg)"/>
+  <circle cx="32" cy="32" r="19" fill="none" stroke="#4d5264" stroke-width="2"/>
+  <circle cx="32" cy="32" r="11" fill="none" stroke="#73798d" stroke-width="2" stroke-dasharray="2.5 4.5" stroke-linecap="round"/>
+  <circle cx="32" cy="32" r="6.5" fill="url(#accent)"/>
+  <circle cx="46.2" cy="19.4" r="4" fill="#20c7b7" stroke="#0b0c10" stroke-width="2"/>
+</svg>

@@ -1,0 +1,81 @@
+<div class="app-shell">
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Focus Orbit home">
+      <span class="brand-mark" aria-hidden="true"><i></i><b></b></span>
+      <span>Focus Orbit</span>
+    </a>
+
+    <div class="top-actions">
+      <label class="chart-toggle">
+        <input
+          type="checkbox"
+          [checked]="showCompletedOnChart()"
+          (change)="showCompletedOnChart.set(!showCompletedOnChart())">
+        <span class="switch"></span>
+        <span class="toggle-label">Completed on map</span>
+      </label>
+
+      <app-settings-panel
+        [categories]="store.categories()"
+        [priorityBands]="store.priorityBands()"
+        (categoriesChanged)="store.setCategories($event)"
+        (priorityBandsChanged)="store.setPriorityBands($event)"
+        (resetRequested)="store.resetDemo()" />
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="workspace-head">
+      <div class="workspace-copy">
+        <span class="overline">My workspace</span>
+        <h1>Keep the important work in orbit.</h1>
+        <p>Map tasks by category and priority, then work from the center outward.</p>
+      </div>
+
+      <div class="summary" aria-label="Workspace summary">
+        <div><strong>{{ store.openTasks().length }}</strong><span>Open</span></div>
+        <div><strong>{{ completion() }}%</strong><span>Done</span></div>
+        <div><strong>{{ highestPriority() }}</strong><span>Top score</span></div>
+      </div>
+    </section>
+
+    <section class="dashboard-grid">
+      <div class="panel chart-panel">
+        <fo-priority-map
+          [categories]="store.categories()"
+          [priorityBands]="store.priorityBands()"
+          [tasks]="store.tasks()"
+          [showCompleted]="showCompletedOnChart()"
+          title="Priority orbit"
+          subtitle="The closer a task is to the center, the more attention it needs."
+          centerLabel="NOW"
+          centerHint="HIGH"
+          ariaLabel="Focus Orbit task priority map"
+          (taskSelected)="onChartTaskSelected($event)" />
+      </div>
+
+      <aside class="side-column">
+        <app-task-form
+          [categories]="store.categories()"
+          [priorityBands]="store.priorityBands()"
+          (taskCreated)="store.addTask($event)" />
+
+        <app-task-list
+          [tasks]="store.tasks()"
+          [categories]="store.categories()"
+          [priorityBands]="store.priorityBands()"
+          (selected)="selectedTask.set($event)"
+          (toggled)="onToggle($event)"
+          (deleted)="onDelete($event)" />
+      </aside>
+    </section>
+  </main>
+
+  <app-task-details
+    [task]="selectedTask()"
+    [categories]="store.categories()"
+    [priorityBands]="store.priorityBands()"
+    (closed)="selectedTask.set(null)"
+    (toggled)="onToggle($event)"
+    (deleted)="onDelete($event)" />
+</div>

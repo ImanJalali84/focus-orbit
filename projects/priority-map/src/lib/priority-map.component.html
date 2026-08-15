@@ -1,0 +1,82 @@
+<div class="chart-shell">
+  <div class="chart-head">
+    <div>
+      <h2>{{ title() }}</h2>
+      <p>{{ subtitle() }}</p>
+    </div>
+    <div class="map-key"><i></i> Task</div>
+  </div>
+
+  @if (categories().length && orderedBands().length) {
+    <div class="chart-wrap">
+      <svg #priorityMapSvg viewBox="0 0 500 500" role="img" [attr.aria-label]="ariaLabel()">
+        <circle cx="250" cy="250" r="194" class="outer-halo" />
+
+        @for (cell of cells(); track cell.key) {
+          <path
+            [attr.d]="cell.path"
+            [attr.fill]="cell.color"
+            [attr.fill-opacity]="cell.opacity"
+            class="sector-cell" />
+        }
+
+        @for (ring of rings(); track ring.radius) {
+          <circle cx="250" cy="250" [attr.r]="ring.radius" class="ring-line" />
+        }
+
+        @for (label of labels(); track label.text) {
+          <g class="category-label" [attr.transform]="'translate(' + label.x + ' ' + label.y + ')'">
+            <circle r="3.5" [attr.fill]="label.color" />
+            <text y="-10" text-anchor="middle">{{ label.text }}</text>
+          </g>
+        }
+
+        <circle cx="250" cy="250" r="29" class="core" />
+        <text x="250" y="248" text-anchor="middle" class="core-title">{{ centerLabel() }}</text>
+        <text x="250" y="261" text-anchor="middle" class="core-caption">{{ centerHint() }}</text>
+
+        @for (point of points(); track point.task.id) {
+          <g
+            class="task-point"
+            [class.is-done]="point.task.done"
+            [attr.transform]="'translate(' + point.x + ' ' + point.y + ')'"
+            [attr.aria-label]="point.task.title + ', priority ' + point.task.priority"
+            (click)="select(point.task)"
+            tabindex="0"
+            role="button"
+            (pointerenter)="showPointerTooltip($event, point)"
+            (pointermove)="movePointerTooltip($event)"
+            (pointerleave)="hideTooltip()"
+            (focus)="showFocusTooltip(point)"
+            (blur)="hideTooltip()"
+            (keydown.enter)="select(point.task)"
+            (keydown.space)="selectWithSpace($event, point.task)">
+            <circle r="9" [attr.fill]="point.color" fill-opacity=".13" class="point-aura" />
+            <circle r="4.6" [attr.fill]="point.color" class="point-core" />
+          </g>
+        }
+      </svg>
+    </div>
+  } @else {
+    <div class="empty-chart">Add a category and a priority level to start mapping tasks.</div>
+  }
+
+  <div class="chart-footer">
+    @for (band of orderedBands(); track band.id) {
+      <span class="band-chip"><b>{{ band.name }}</b> {{ band.min }}–{{ band.max }}</span>
+    }
+  </div>
+</div>
+
+@if (tooltip(); as tip) {
+  <div class="chart-tooltip" [style.left.px]="tip.x" [style.top.px]="tip.y" role="tooltip">
+    <div class="tooltip-title">
+      <i [style.background]="tip.color"></i>
+      <strong>{{ tip.task.title }}</strong>
+    </div>
+    <div class="tooltip-meta">
+      <span>{{ tip.categoryName }}</span>
+      <span>{{ tip.priorityName }} · {{ tip.task.priority }}</span>
+    </div>
+  </div>
+}

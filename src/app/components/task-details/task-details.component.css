@@ -1,0 +1,26 @@
+:host { display: block; }
+.dialog-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgba(5,6,9,.72); backdrop-filter: blur(7px); animation: fadeIn .15s ease-out; }
+.detail-dialog { width: min(520px,100%); max-height: calc(100dvh - 40px); overflow: auto; background: var(--surface); border: 1px solid var(--line-strong); box-shadow: 0 30px 90px rgba(0,0,0,.48); border-radius: 18px; animation: dialogIn .17s ease-out; }
+.dialog-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 20px 0; }
+.status-line { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+.category, .priority { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 999px; padding: 5px 8px; color: var(--muted); background: var(--surface-2); font-size: .62rem; }
+.category i { width: 6px; height: 6px; border-radius: 50%; background: var(--cat); }
+.close { width: 30px; height: 30px; display: grid; place-items: center; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font-size: 1.15rem; cursor: pointer; }
+.close:hover { background: var(--surface-2); color: var(--text); }
+.dialog-body { padding: 20px; }
+.dialog-body h2 { margin: 0 0 10px; font-size: clamp(1.2rem,3vw,1.55rem); line-height: 1.32; letter-spacing: -.03em; }
+.description { margin: 0; min-height: 44px; color: var(--muted); line-height: 1.75; font-size: .76rem; white-space: pre-wrap; }
+dl { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 20px 0 0; }
+dl div { border: 1px solid var(--line); border-radius: 11px; padding: 10px 11px; background: var(--surface-2); }
+dt { margin-bottom: 5px; color: var(--muted-2); font-size: .58rem; text-transform: uppercase; letter-spacing: .08em; }
+dd { display: flex; align-items: center; gap: 6px; margin: 0; color: #e3e6ed; font-size: .7rem; }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: #7c8391; }
+.status-dot.done { background: var(--success); }
+.actions { display: flex; justify-content: flex-end; gap: 8px; padding: 0 20px 20px; }
+.actions button { border-radius: 9px; padding: 9px 12px; cursor: pointer; font-size: .7rem; font-weight: 700; }
+.toggle { border: 0; background: var(--accent); color: #fff; }
+.delete { border: 1px solid var(--line); background: transparent; color: var(--danger); }
+.actions button:hover { filter: brightness(1.08); }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dialogIn { from { opacity: 0; transform: translateY(8px) scale(.985); } to { opacity: 1; transform: none; } }
+@media (max-width: 540px) { .dialog-backdrop { padding: 10px; } .detail-dialog { max-height: calc(100dvh - 20px); border-radius: 15px; } dl { grid-template-columns: 1fr; } .actions { flex-direction: column-reverse; } .actions button { width: 100%; } }
