@@ -1,164 +1,305 @@
+![Focus Orbit — Visual priority planner](docs/focus-orbit-hero.png)
+
 # Focus Orbit
 
-Focus Orbit is a visual priority planner built with Angular 22. It turns a normal task list into a spatial priority map: tasks are grouped by category, placed inside configurable priority ranges, and drawn closer to the center as their numeric priority increases.
+**Focus Orbit is a visual priority planner that helps you see what deserves attention first.**
 
-The repository is an Angular workspace with two projects:
+Instead of representing priority only with numbers, labels, or sorted rows, Focus Orbit turns a normal task list into a spatial priority map.
 
-- **`focus-orbit`** — the end-user task planning application.
-- **`@iman_jalali/priority-map`** — a reusable Angular library that renders the radial priority visualization used by the app.
+Tasks are grouped by category and positioned according to their priority.
 
-## What Focus Orbit is for
+> **The closer a task is to the center, the more attention it needs.**
 
-A long task list is easy to scan but often poor at showing what deserves attention first. Focus Orbit keeps the familiar task workflow while adding a visual model:
+Focus Orbit keeps the familiar task-list workflow while adding a visual way to understand urgency, workload, and priority at a glance.
 
-- **Angle / sector** represents the task category.
-- **Distance from the center** represents priority.
-- **Color** represents the category.
-- **A point** represents a task.
-- **Closer to the center means higher priority.**
+---
 
-The result is a lightweight planning view that helps you see urgent work without replacing the normal task list.
+## Table of Contents
 
-## Features
+* [What Focus Orbit Is](#what-focus-orbit-is)
+* [Why It Exists](#why-it-exists)
+* [How to Read the Priority Map](#how-to-read-the-priority-map)
+* [Typical Workflow](#typical-workflow)
+* [What You Can Do](#what-you-can-do)
+* [How Priority Works](#how-priority-works)
+* [Technical Architecture](#technical-architecture)
+* [Technology](#technology)
+* [Getting Started](#getting-started)
+* [Available Scripts](#available-scripts)
+* [Reusable Priority Map Library](#reusable-priority-map-library)
+* [Application Data Model](#application-data-model)
+* [Persistence](#persistence)
+* [Repository Structure](#repository-structure)
+* [Accessibility](#accessibility)
+* [Customization](#customization)
+* [Production Considerations](#production-considerations)
+
+---
+
+## What Focus Orbit Is
+
+Most task managers answer:
+
+> What tasks do I have?
+
+Focus Orbit also helps answer:
+
+> **Which of those tasks should get my attention first?**
+
+It combines two views of the same work:
+
+* a **task list** for creating and managing tasks;
+* a **priority map** for understanding their relative importance.
+
+![Focus Orbit concept overview](docs/focus-orbit-concept-overview.png)
+
+Each task becomes a point on the map.
+
+Its position communicates information before you even open the task.
+
+| Visual element           | Meaning        |
+| ------------------------ | -------------- |
+| **Point**                | A task         |
+| **Distance from center** | Priority       |
+| **Sector**               | Category       |
+| **Color**                | Category       |
+| **Concentric band**      | Priority level |
+
+The central idea is intentionally simple:
+
+**Important work moves inward.**
+
+---
+
+## Why It Exists
+
+Task lists are excellent for storing work.
+
+They are not always excellent at showing the relationship between many competing priorities.
+
+As a list grows, priority can become buried among rows, labels, dates, filters, and numbers.
+
+Focus Orbit adds a spatial representation without removing the list.
+
+![Traditional task list compared with Focus Orbit](docs/focus-orbit-problem-and-solution.png)
+
+The goal is not to replace traditional task management.
+
+The goal is to make **attention easier to understand**.
+
+With the same underlying tasks, the map can make it easier to notice:
+
+* urgent work;
+* clusters of important work;
+* overloaded categories;
+* low-priority tasks occupying attention;
+* differences between tasks inside the same priority level.
+
+---
+
+## How to Read the Priority Map
+
+You do not need to understand the implementation to understand the map.
+
+There are four basic rules.
+
+![How to read the Focus Orbit priority map](docs/focus-orbit-priority-map-guide.png)
+
+### 1. A task is a point
+
+Every visible point represents a task.
+
+### 2. Categories occupy sectors
+
+Tasks belonging to the same category appear within the same angular area of the map.
+
+### 3. Priority controls distance
+
+A task's numeric priority determines how far it sits from the center.
+
+### 4. Higher priority means closer to the center
+
+The center represents the strongest demand for attention.
+
+This makes the visualization readable even before examining exact scores.
+
+---
+
+## Typical Workflow
+
+Focus Orbit does not require a completely new way of managing tasks.
+
+The usual workflow remains familiar.
+
+![Typical Focus Orbit task workflow](docs/focus-orbit-workflow.png)
+
+A typical task moves through five steps:
+
+1. Create the task.
+2. Assign it to a category.
+3. Give it a priority.
+4. Review it in the task list or priority map.
+5. Complete it — or reopen it later if necessary.
+
+The list handles task management.
+
+The map helps with understanding.
+
+---
+
+## What You Can Do
 
 ### Task planning
 
-- Create tasks with a title, optional notes, category, priority score, and due date.
-- Mark tasks as complete or reopen them.
-- Delete tasks.
-- Search tasks by title or notes.
-- Filter the list by **Open**, **Done**, or **All**.
-- Open task details in a centered modal dialog.
-- Optionally show completed tasks on the priority map.
+Focus Orbit lets you:
+
+* create tasks with a title;
+* add optional notes;
+* assign a category;
+* assign a numeric priority;
+* set a due date;
+* mark tasks as complete;
+* reopen completed tasks;
+* delete tasks;
+* search by title or notes;
+* filter by **Open**, **Done**, or **All**;
+* open task details in a modal;
+* optionally display completed tasks on the priority map.
 
 ### Workspace configuration
 
-- Create and remove categories.
-- Assign a custom color to each category.
-- Define any number of numeric priority levels.
-- Use built-in two-level and three-level presets.
-- Prevent overlapping priority ranges.
-- Reassign tasks to the first available category if a category is removed.
+The workspace can be adapted to different planning systems.
+
+You can:
+
+* create categories;
+* remove categories;
+* choose a color for each category;
+* define your own numeric priority levels;
+* use built-in two-level or three-level presets;
+* prevent priority ranges from overlapping.
+
+If a category is removed, affected tasks are reassigned to the first available category.
 
 ### Priority visualization
 
-- Tasks are displayed as interactive points on a radial map.
-- Higher numeric priority values are placed closer to the center.
-- Hovering a task point shows a floating tooltip with its title, category, level, and score.
-- Clicking or pressing Enter/Space on a point emits the selected task and opens its details in the host app.
-- Category sectors use the configured category colors.
-- Priority levels are shown as concentric radial bands.
-- The map is responsive and keyboard accessible.
+The map provides:
 
-### Persistence
+* interactive task points;
+* category sectors;
+* configurable radial priority bands;
+* hover and focus tooltips;
+* keyboard navigation;
+* task selection directly from the visualization;
+* optional visibility for completed tasks;
+* responsive SVG rendering.
 
-Workspace state is stored locally in the browser under:
+---
+
+## How Priority Works
+
+Focus Orbit uses numeric priority ranges.
+
+A default workspace uses:
 
 ```text
-focus-orbit-workspace
+Low      1–10
+Medium  11–20
+High    21–30
 ```
 
-The app automatically migrates data from the previous key:
+Those ranges become radial regions on the map.
 
-```text
-focus-orbit-workspace-v1
-```
+![How numeric priority becomes radial position](docs/focus-orbit-priority-mapping.png)
 
-After a successful migration, the legacy key is removed.
+The priority band determines the general region.
+
+The exact score determines the task's position within that region.
+
+For example:
+
+* priority `29` appears very close to the center;
+* priority `22` is still **High**, but farther from the center than `29`;
+* priority `15` appears in the **Medium** region;
+* priority `4` appears in the outer **Low** region.
+
+This means two tasks can both be labeled **High** while still communicating which one needs more attention.
+
+### Deterministic angular placement
+
+Task IDs are hashed to introduce deterministic angular variation inside their category sector.
+
+Radial jitter is intentionally not used.
+
+That matters because distance from the center remains a truthful representation of priority.
+
+---
+
+# Technical Details
+
+Everything above describes Focus Orbit from the user's point of view.
+
+The following sections explain how the project is implemented.
+
+---
+
+## Technical Architecture
+
+Focus Orbit is an Angular workspace containing two projects:
+
+* **`focus-orbit`** — the end-user planning application;
+* **`@iman_jalali/priority-map`** — the reusable Angular visualization library.
+
+![Focus Orbit technical architecture](docs/focus-orbit-architecture.png)
+
+The application owns:
+
+* task management;
+* workspace settings;
+* application state;
+* persistence.
+
+The priority-map package owns:
+
+* SVG rendering;
+* radial bands;
+* category sectors;
+* interactive task points;
+* task-selection events.
+
+The application passes categories, priority bands, and tasks into the library.
+
+The library renders them without needing to know how the host application stores its data.
+
+This separation allows the visualization to be reused independently of Focus Orbit.
+
+---
 
 ## Technology
 
-- Angular 22
-- Standalone components
-- Angular Signals
-- Reactive Forms and FormsModule
-- TypeScript 6
-- SVG for the priority map
-- `ng-packagr` for the reusable Angular library
-- Browser LocalStorage for persistence
-- No third-party charting library
+Focus Orbit uses:
 
+* **Angular 22**
+* **TypeScript 6**
+* Angular standalone components
+* Angular Signals
+* Reactive Forms
+* FormsModule
+* SVG
+* Browser LocalStorage
+* `ng-packagr`
 
-## npm package
+No third-party charting library is used.
 
-The reusable chart library is published under the npm user scope:
+---
 
-```text
-@iman_jalali/priority-map
-```
-
-Build it from the workspace root:
-
-```bash
-npm run build:priority-map
-```
-
-Then publish from the generated package directory:
-
-```bash
-cd dist/priority-map
-npm pack --dry-run
-npm publish --access public
-```
-
-Install it in another Angular project with:
-
-```bash
-npm install @iman_jalali/priority-map
-```
-
-See `projects/priority-map/README.md` for the complete library API and publishing guide.
-
-## Repository structure
-
-```text
-focus-orbit/
-├── public/
-│   ├── favicon.svg
-│   └── favicon.ico
-├── src/
-│   ├── app/
-│   │   ├── components/
-│   │   │   ├── settings-panel/
-│   │   │   ├── task-details/
-│   │   │   ├── task-form/
-│   │   │   └── task-list/
-│   │   ├── core/
-│   │   │   └── planner.store.ts
-│   │   ├── models/
-│   │   │   └── planner.models.ts
-│   │   ├── app.component.ts
-│   │   ├── app.component.html
-│   │   └── app.component.css
-│   ├── index.html
-│   ├── main.ts
-│   └── styles.css
-├── projects/
-│   └── priority-map/
-│       ├── src/
-│       │   ├── lib/
-│       │   │   ├── priority-map.component.ts
-│       │   │   ├── priority-map.component.html
-│       │   │   ├── priority-map.component.css
-│       │   │   └── priority-map.models.ts
-│       │   └── public-api.ts
-│       ├── README.md
-│       ├── ng-package.json
-│       ├── package.json
-│       └── tsconfig.lib.json
-├── angular.json
-├── package.json
-├── tsconfig.app.json
-└── tsconfig.json
-```
-
-## Getting started
+## Getting Started
 
 ### Requirements
 
-Use a Node.js version supported by your installed Angular 22 toolchain, then install dependencies from the workspace root.
+Use a Node.js version supported by your installed Angular 22 toolchain.
 
-### Install
+Install the workspace dependencies:
 
 ```bash
 npm install
@@ -170,7 +311,7 @@ npm install
 npm start
 ```
 
-The script runs the `focus-orbit` Angular application through the Angular development server.
+This runs the `focus-orbit` Angular application through the Angular development server.
 
 ### Production build
 
@@ -178,81 +319,74 @@ The script runs the `focus-orbit` Angular application through the Angular develo
 npm run build
 ```
 
-## Available scripts
+### Build everything
 
-| Command | Purpose |
-| --- | --- |
-| `npm start` | Run the Focus Orbit development server. |
-| `npm run build` | Build the application. |
-| `npm run watch` | Build the application in development watch mode. |
-| `npm run build:priority-map` | Build only the reusable priority map library. |
-| `npm run build:all` | Build the library first, then build the app. |
-| `npm run pack:priority-map` | Build the library and create an installable npm archive from `dist/priority-map`. |
+To build the reusable library first and then the application:
 
-## How the priority model works
+```bash
+npm run build:all
+```
 
-Priority ranges are numeric and configurable. A default workspace uses:
+---
+
+## Available Scripts
+
+| Command                      | Purpose                                                     |
+| ---------------------------- | ----------------------------------------------------------- |
+| `npm start`                  | Run the Focus Orbit development server                      |
+| `npm run build`              | Build the application                                       |
+| `npm run watch`              | Build the application in development watch mode             |
+| `npm run build:priority-map` | Build the reusable priority-map library                     |
+| `npm run build:all`          | Build the library first, then the application               |
+| `npm run pack:priority-map`  | Build the library and create an installable package archive |
+
+---
+
+## Reusable Priority Map Library
+
+The visualization is published as:
 
 ```text
-Low      1–10
-Medium  11–20
-High    21–30
+@iman_jalali/priority-map
 ```
 
-The map first finds the priority band that contains a task score. The band determines the task's radial region. Inside that band, the exact score determines the task's distance from the center.
+### Install
 
-For example, with the default ranges:
-
-- Priority `29` appears very close to the center.
-- Priority `22` is still in the High band, but farther out than `29`.
-- Priority `15` appears in the Medium band.
-- Priority `4` appears in the outer Low band.
-
-Task IDs are hashed only to add deterministic **angular** variation inside a category sector. Radial jitter is intentionally not used, so distance from the center remains a truthful representation of priority.
-
-## Application data model
-
-The app works with three main concepts.
-
-### Category
-
-```ts
-interface Category {
-  id: string;
-  name: string;
-  color: string;
-}
+```bash
+npm install @iman_jalali/priority-map
 ```
 
-### Priority band
+### Build the library
 
-```ts
-interface PriorityBand {
-  id: string;
-  name: string;
-  min: number;
-  max: number;
-}
+```bash
+npm run build:priority-map
 ```
 
-### Task
+The generated Angular package is written to:
 
-```ts
-interface PlannerTask {
-  id: string;
-  title: string;
-  description: string;
-  categoryId: string;
-  priority: number;
-  done: boolean;
-  createdAt: string;
-  dueDate?: string;
-}
+```text
+dist/priority-map
 ```
 
-## Using the priority map package inside the app
+### Create an installable archive
 
-The application consumes the chart through the library's public package API instead of importing a component by a relative path.
+```bash
+npm run pack:priority-map
+```
+
+### Publish
+
+From the generated package directory:
+
+```bash
+cd dist/priority-map
+npm pack --dry-run
+npm publish --access public
+```
+
+### Using the library
+
+Focus Orbit consumes the visualization through its public package API rather than importing internal components through relative paths.
 
 ```ts
 import {
@@ -261,7 +395,7 @@ import {
 } from '@iman_jalali/priority-map';
 ```
 
-The workspace path alias is configured in `tsconfig.json`:
+The workspace alias is configured in `tsconfig.json`:
 
 ```json
 {
@@ -291,67 +425,257 @@ Example template usage:
   (taskSelected)="onChartTaskSelected($event)" />
 ```
 
-For the full library API, styling variables, data contracts, and packaging instructions, see [`projects/priority-map/README.md`](projects/priority-map/README.md).
-
-## Building the priority map library
-
-```bash
-npm run build:priority-map
-```
-
-The generated Angular package is written to:
+For the complete package API, styling variables, data contracts, and publishing instructions, see:
 
 ```text
-dist/priority-map
+projects/priority-map/README.md
 ```
 
-To build both projects:
+---
 
-```bash
-npm run build:all
+## Application Data Model
+
+Focus Orbit revolves around three primary domain concepts:
+
+* categories;
+* priority bands;
+* tasks.
+
+They are managed through `PlannerStore` and persisted to the browser.
+
+![Focus Orbit data model and persistence](docs/focus-orbit-data-model-and-persistence.png)
+
+### Category
+
+A category describes a type of work and its visual color.
+
+```ts
+interface Category {
+  id: string;
+  name: string;
+  color: string;
+}
 ```
 
-To create an installable package archive:
+### Priority Band
 
-```bash
-npm run pack:priority-map
+A priority band defines a named numeric range.
+
+```ts
+interface PriorityBand {
+  id: string;
+  name: string;
+  min: number;
+  max: number;
+}
 ```
 
-## LocalStorage behavior
+### Task
 
-`PlannerStore` owns persistence. Every state change is written to `focus-orbit-workspace` as JSON.
+A task contains the information needed both for normal task management and for positioning it on the priority map.
 
-If the current key is missing, the store checks known legacy keys and migrates the first valid value it finds. If stored data cannot be parsed, the application falls back to the default sample workspace.
+```ts
+interface PlannerTask {
+  id: string;
+  title: string;
+  description: string;
+  categoryId: string;
+  priority: number;
+  done: boolean;
+  createdAt: string;
+  dueDate?: string;
+}
+```
 
-To completely reset local data manually, remove the `focus-orbit-workspace` key from the browser's Local Storage, then reload the page. You can also use **Settings → Reset sample data** inside the application.
+---
+
+## Persistence
+
+`PlannerStore` owns workspace persistence.
+
+Every state change is written to Browser LocalStorage as JSON.
+
+The current key is:
+
+```text
+focus-orbit-workspace
+```
+
+Focus Orbit also recognizes the legacy key:
+
+```text
+focus-orbit-workspace-v1
+```
+
+If the current key does not exist, the application checks known legacy keys and migrates the first valid value it finds.
+
+After a successful migration, the legacy key is removed.
+
+If stored data cannot be parsed, the application falls back to the default sample workspace.
+
+### Resetting Local Data
+
+You can reset the workspace from inside the application:
+
+```text
+Settings → Reset sample data
+```
+
+Or manually remove:
+
+```text
+focus-orbit-workspace
+```
+
+from the browser's Local Storage and reload the application.
+
+---
+
+## Repository Structure
+
+```text
+focus-orbit/
+├── public/
+│   ├── favicon.svg
+│   └── favicon.ico
+│
+├── src/
+│   ├── app/
+│   │   ├── components/
+│   │   │   ├── settings-panel/
+│   │   │   ├── task-details/
+│   │   │   ├── task-form/
+│   │   │   └── task-list/
+│   │   │
+│   │   ├── core/
+│   │   │   └── planner.store.ts
+│   │   │
+│   │   ├── models/
+│   │   │   └── planner.models.ts
+│   │   │
+│   │   ├── app.component.ts
+│   │   ├── app.component.html
+│   │   └── app.component.css
+│   │
+│   ├── index.html
+│   ├── main.ts
+│   └── styles.css
+│
+├── projects/
+│   └── priority-map/
+│       ├── src/
+│       │   ├── lib/
+│       │   │   ├── priority-map.component.ts
+│       │   │   ├── priority-map.component.html
+│       │   │   ├── priority-map.component.css
+│       │   │   └── priority-map.models.ts
+│       │   │
+│       │   └── public-api.ts
+│       │
+│       ├── README.md
+│       ├── ng-package.json
+│       ├── package.json
+│       └── tsconfig.lib.json
+│
+├── angular.json
+├── package.json
+├── tsconfig.app.json
+└── tsconfig.json
+```
+
+---
+
+## Accessibility
+
+Focus Orbit is designed so that the visualization does not rely entirely on color or pointer interaction.
+
+The application includes:
+
+* keyboard-focusable SVG task points;
+* `Enter` and `Space` task selection;
+* ARIA labeling for the map;
+* accessible labels for task points;
+* hover and keyboard-focus tooltips;
+* modal-style task details;
+* visible textual task titles;
+* visible numeric priority values;
+* category colors used as supporting rather than exclusive signals.
+
+Tooltips are rendered outside the SVG so they are not clipped by the chart viewport.
+
+---
+
+## Customization
+
+Common starting points for customization are listed below.
+
+### Default categories, priority bands, and sample tasks
+
+```text
+src/app/core/planner.store.ts
+```
+
+### Global colors and layout tokens
+
+```text
+src/styles.css
+```
+
+### Main dashboard composition
+
+```text
+src/app/app.component.html
+```
+
+### Priority-map rendering behavior
+
+```text
+projects/priority-map/src/lib/priority-map.component.ts
+```
+
+### Priority-map visual tokens
+
+```text
+projects/priority-map/src/lib/priority-map.component.css
+```
+
+### Browser title, metadata, and favicon
+
+```text
+src/index.html
+```
+
+---
 
 ## Favicon
 
-The project includes a custom Focus Orbit favicon in `public/favicon.svg` with an `.ico` fallback. The icon uses an orbit-and-core motif that matches the application's radial priority model.
+Focus Orbit includes a custom orbit-and-core favicon that reflects the radial priority model.
 
-Both files are referenced from `src/index.html` and are copied as static assets through the Angular `public` asset configuration.
+The project contains:
 
-## UI and accessibility notes
+```text
+public/favicon.svg
+public/favicon.ico
+```
 
-- The application uses a responsive dark interface.
-- Task points on the SVG map are keyboard focusable.
-- Enter and Space select a focused task point.
-- The map exposes an ARIA label and task point labels.
-- Hover/focus tooltips remain outside the SVG so they are not clipped by the chart viewport.
-- Task details are displayed in a modal-style dialog with a backdrop.
-- Category colors are used as supporting signals; task titles and numeric priority values remain available as text.
+Both are referenced from `src/index.html` and copied as static assets through Angular's `public` asset configuration.
 
-## Customizing the product
+---
 
-Common places to start:
+## Production Considerations
 
-- **Default categories, priority bands, and sample tasks:** `src/app/core/planner.store.ts`
-- **Global colors and layout tokens:** `src/styles.css`
-- **Main dashboard composition:** `src/app/app.component.html`
-- **Priority map rendering behavior:** `projects/priority-map/src/lib/priority-map.component.ts`
-- **Priority map visual tokens:** `projects/priority-map/src/lib/priority-map.component.css`
-- **Browser title, metadata, and favicon links:** `src/index.html`
+The current version intentionally uses Browser LocalStorage.
 
-## Notes for production use
+It does **not** currently provide:
 
-This version intentionally uses browser LocalStorage and has no authentication or backend. For multi-device sync, collaboration, permissions, or server-side persistence, replace or wrap `PlannerStore` with an API-backed data layer while keeping the UI and priority map package independent.
+* authentication;
+* user accounts;
+* server-side persistence;
+* multi-device synchronization;
+* team collaboration;
+* permissions;
+* shared workspaces.
+
+For those scenarios, `PlannerStore` can be replaced or wrapped with an API-backed data layer.
+
+The reusable `@iman_jalali/priority-map` library remains independent of the persistence mechanism.
