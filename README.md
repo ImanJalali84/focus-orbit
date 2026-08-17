@@ -1,4 +1,4 @@
-![Focus Orbit — Visual priority planner](docs/assets/focus-orbit-hero.png)
+![Focus Orbit — Visual priority planner](docs/focus-orbit-hero.png)
 
 # Focus Orbit
 
