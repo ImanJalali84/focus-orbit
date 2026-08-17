@@ -1,4 +1,4 @@
-![Focus Orbit — Visual priority planner](docs/focus-orbit-hero.png)
+![Focus Orbit — Visual priority planner](docs/assets/focus-orbit-hero.png)
 
 # Focus Orbit
 
@@ -11,6 +11,10 @@ Tasks are grouped by category and positioned according to their priority.
 > **The closer a task is to the center, the more attention it needs.**
 
 Focus Orbit keeps the familiar task-list workflow while adding a visual way to understand urgency, workload, and priority at a glance.
+
+## Demo
+
+[▶ Watch the Focus Orbit demo](docs/focus%20orbit.mp4)
 
 ---
 
