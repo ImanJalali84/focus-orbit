@@ -14,10 +14,7 @@ Focus Orbit keeps the familiar task-list workflow while adding a visual way to u
 
 ## Demo
 
-<video width="800" controls>
-  <source src="https://github.com/ImanJalali84/focus-orbit/raw/refs/heads/main/docs/focus%20orbit.mp4" type="video/mp4">
-</video>
-
+[▶ Watch the Focus Orbit demo](docs/focus%20orbit.mp4)
 ---
 
 ## Table of Contents
